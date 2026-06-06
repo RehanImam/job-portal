@@ -2,17 +2,18 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Plus, Trash2, Users, Briefcase, FileText, ExternalLink, MapPin, FolderPlus, Send, Folder } from 'lucide-react';
+import { Plus, Trash2, Users, Briefcase, FileText, ExternalLink, MapPin, FolderPlus, Send, Folder, DollarSign } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 
 const AdminPanel = () => {
   const [stats, setStats] = useState({ users: 0, jobs: 0, apps: 0 });
   const [applications, setApplications] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
+  const [jobsList, setJobsList] = useState([]); 
   const [loading, setLoading] = useState(true);
 
-  // 🛠️ Active Tab state control karne ke liye
-  const [activeTab, setActiveTab] = useState('category'); // 'category' ya 'job'
+  // 🛠️ Modified Tabs: 'category', 'post-job', ya 'manage-jobs'
+  const [activeTab, setActiveTab] = useState('category'); 
 
   const [categoryData, setCategoryData] = useState({ name: "", icon: "Zap", vacancies: "" });
   const [jobFormData, setJobFormData] = useState({ title: '', salary: '', location: '', jobType: 'Full-Time', category: '', description: '' });
@@ -38,6 +39,11 @@ const AdminPanel = () => {
       const catRes = await axios.get('http://localhost:5000/api/v1/category/all');
       if (catRes.data.success) {
         setCategoriesList(catRes.data.categories);
+      }
+
+      const jobRes = await axios.get('http://localhost:5000/api/v1/jobs/alljobs');
+      if (jobRes.data.success) {
+        setJobsList(jobRes.data.jobs);
       }
     } catch (err) {
       console.error("Dashboard Sync Delay:", err);
@@ -98,23 +104,37 @@ const AdminPanel = () => {
     }
   };
 
+  const handleDeleteJob = async (jobId, jobTitle) => {
+    if (!window.confirm(`⚠️ ALERT: Kya aap sach me "${jobTitle.toUpperCase()}" job ko system se delete karna chahte hain?`)) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.delete(`http://localhost:5000/api/v1/jobs/delete/${jobId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (res.data.success) {
+        toast.success("Job permanently delete ho gayi! 🗑️");
+        setJobsList((prev) => prev.filter((job) => job._id !== jobId));
+        setStats((prev) => ({ ...prev, jobs: prev.jobs - 1 }));
+      }
+    } catch (error) {
+      console.error("Job Delete Error:", error);
+      toast.error(error.response?.data?.message || "Job delete karne me dikkat aayi!");
+    }
+  };
+
   const handleDeleteApplication = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.delete(
-        `http://localhost:5000/api/admin/application/${id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await axios.delete(`http://localhost:5000/api/admin/application/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       if (res.data.success) {
         toast.success("Application deleted");
         setApplications((prev) => prev.filter((item) => item._id !== id));
-        setStats((prev) => ({
-          ...prev,
-          apps: prev.apps - 1,
-        }));
+        setStats((prev) => ({ ...prev, apps: prev.apps - 1 }));
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to delete application");
@@ -144,8 +164,8 @@ const AdminPanel = () => {
         <StatCard label="Applications Tracking" value={stats.apps} icon={FileText} color="amber" />
       </div>
 
-      {/* 🔥 Action Buttons (Tabs System) */}
-      <div className="flex gap-4 mb-8 bg-white/5 p-2 rounded-2xl w-fit border border-white/10">
+      {/* Modern 3-Tab Action Navigation Buttons */}
+      <div className="flex flex-wrap gap-4 mb-8 bg-white/5 p-2 rounded-2xl w-fit border border-white/10">
         <button
           onClick={() => setActiveTab('category')}
           className={`px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all ${
@@ -158,19 +178,30 @@ const AdminPanel = () => {
           Create Category
         </button>
         <button
-          onClick={() => setActiveTab('job')}
+          onClick={() => setActiveTab('post-job')}
           className={`px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all ${
-            activeTab === 'job'
+            activeTab === 'post-job'
               ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/20'
               : 'text-gray-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <Briefcase size={18} />
+          <Plus size={18} />
           New Job Post
+        </button>
+        <button
+          onClick={() => setActiveTab('manage-jobs')}
+          className={`px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all ${
+            activeTab === 'manage-jobs'
+              ? 'bg-gradient-to-r from-red-500 to-amber-500 text-white shadow-lg shadow-red-500/20'
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <Trash2 size={18} />
+          Delete & Manage Jobs
         </button>
       </div>
 
-      {/* 🔥 Conditional Rendering Sections Based on Active Tab */}
+      {/* 📁 TAB 1: CATEGORY SECTOR */}
       {activeTab === 'category' && (
         <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 mb-10 backdrop-blur-md animate-fadeIn">
           <div className="flex items-center gap-2 mb-4 border-b border-white/10 pb-3">
@@ -178,7 +209,6 @@ const AdminPanel = () => {
             <h2 className="text-xl font-bold">Manage Category Clusters</h2>
           </div>
           
-          {/* Category Creation Form */}
           <form onSubmit={handleCategorySubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mb-6">
             <div>
               <label className="block text-xs text-gray-400 mb-1.5 uppercase font-bold">Category Name</label>
@@ -201,7 +231,6 @@ const AdminPanel = () => {
             <button type="submit" className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2"><Plus size={18}/> Create Category</button>
           </form>
 
-          {/* Active Categories Grid Loop */}
           <div className="border-t border-white/10 pt-4">
             <p className="text-xs text-gray-400 uppercase tracking-wider font-bold mb-3">Live System Categories ({categoriesList.length})</p>
             {categoriesList.length === 0 ? (
@@ -229,7 +258,8 @@ const AdminPanel = () => {
         </div>
       )}
 
-      {activeTab === 'job' && (
+      {/* 🚀 TAB 2: POST A NEW JOB */}
+      {activeTab === 'post-job' && (
         <div className="bg-white/5 border border-white/10 p-8 rounded-[2rem] backdrop-blur-md mb-10 animate-fadeIn">
           <h2 className="text-3xl font-bold mb-6 flex items-center gap-3"><Briefcase className="text-blue-400" /> Post a New Opportunity</h2>
           <form onSubmit={handleJobSubmit} className="space-y-5">
@@ -270,6 +300,43 @@ const AdminPanel = () => {
             </div>
             <button type="submit" disabled={jobLoading} className="w-full bg-blue-600 hover:bg-blue-500 p-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all">{jobLoading ? "Processing Node Posting..." : <><Send size={20}/> Publish Opening</>}</button>
           </form>
+        </div>
+      )}
+
+      {/* 🗑️ TAB 3: LIVE JOB TRACKING & DELETE MANAGEMENT CONTAINER */}
+      {activeTab === 'manage-jobs' && (
+        <div className="bg-white/5 border border-white/10 p-6 rounded-[2rem] backdrop-blur-md mb-10 animate-fadeIn">
+          <div className="flex items-center gap-2 mb-4 border-b border-white/10 pb-3">
+            <Briefcase className="text-red-400" size={22} />
+            <h2 className="text-xl font-bold">Manage Active Postings ({jobsList.length})</h2>
+          </div>
+          
+          {jobsList.length === 0 ? (
+            <p className="text-gray-500 text-sm">No live jobs posted inside the system tracker block yet.</p>
+          ) : (
+            <div className="space-y-3 max-h-[450px] overflow-y-auto pr-2">
+              {jobsList.map((job) => (
+                <div key={job._id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-900/40 border border-white/5 rounded-2xl p-4 gap-4 hover:border-white/10 transition-all">
+                  <div>
+                    <h4 className="font-bold text-white text-base">{job.title}</h4>
+                    <div className="flex flex-wrap gap-3 text-xs text-gray-400 mt-1">
+                      <span className="text-cyan-400 font-medium uppercase tracking-wider">{job.jobType}</span>
+                      <span className="flex items-center gap-0.5"><MapPin size={12}/> {job.location}</span>
+                      <span className="flex items-center gap-0.5 text-emerald-400"><DollarSign size={12}/> {job.salary}</span>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => handleDeleteJob(job._id, job.title)}
+                    className="w-fit self-end sm:self-center p-2.5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl hover:bg-red-600 hover:text-white transition-all duration-300"
+                    title="Delete This Job Listing"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

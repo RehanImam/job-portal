@@ -1,128 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-// import { motion } from 'framer-motion';
-// import { 
-//   User, Mail, Phone, Calendar, 
-//    ArrowLeft,
-//   ShieldCheck, MapPin, ChevronRight 
-// } from 'lucide-react';
-// import { useNavigate } from 'react-router-dom';
-// import { useAuth } from '../context/AuthContext'; // Context use karein
-
-// const UserProfile = () => {
-//   const navigate = useNavigate();
-//   const { user: authUser } = useAuth(); // AuthContext se token aur basic info lein
-//   const [profileData, setProfileData] = useState(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchUserData = async () => {
-//       try {
-//         const token = localStorage.getItem("token");
-//         // Aapka backend route jo user ki full details (with populated profile) deta ho
-//         const response = await fetch('http://localhost:5000/api/v1/auth/getUserDetails', {
-//           method: 'GET',
-//           headers: {
-//             'Authorization': `Bearer ${token}`
-//           }
-//         });
-//         const data = await response.json();
-//         if (data.success) {
-//           setProfileData(data.userDetails);
-//         }
-//       } catch (error) {
-//         console.error("Error fetching profile:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchUserData();
-//   }, []);
-
-//   if (loading) return <div className="min-h-screen bg-[#0f172a] text-white flex items-center justify-center font-bold">Loading Profile...</div>;
-
-//   // Agar backend se data na mile toh AuthContext wala basic data use karein
-//   const displayUser = profileData || authUser;
-//   const details = profileData?.additionalDetails || {};
-
-//   return (
-//     <motion.div 
-//       initial={{ opacity: 0, y: 20 }}
-//       animate={{ opacity: 1, y: 0 }}
-//       className="min-h-screen bg-[#0f172a] flex flex-col pt-20"
-//     >
-//       {/* Top Nav */}
-//       <div className="w-full max-w-7xl mx-auto px-6 py-10 flex justify-between items-center">
-//         <button onClick={() => navigate(-1)} className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-gray-300 hover:text-white">
-//           <ArrowLeft size={20} /> <span className="font-bold text-sm">Back</span>
-//         </button>
-        
-//         <div className="flex items-center gap-4 px-4 py-2 bg-white/5 rounded-2xl border border-white/5">
-//           <div className="text-right hidden sm:block">
-//             <p className="text-white font-bold text-sm">{displayUser?.fullName}</p>
-//             <p className="text-blue-400 text-[10px] font-black uppercase tracking-widest">{displayUser?.role}</p>
-//           </div>
-//           <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white">
-//              <User size={20} />
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Profile Hero */}
-//       <div className="flex-1 px-6 pb-24">
-//         <div className="max-w-7xl mx-auto flex flex-col gap-10">
-//           <div className="bg-white/5 border border-white/10 rounded-[3.5rem] p-12 md:p-20 relative overflow-hidden flex flex-col md:flex-row items-center gap-12 shadow-2xl">
-//             <div className="w-40 h-40 md:w-52 md:h-52 rounded-[4rem] bg-gradient-to-tr from-blue-600 to-blue-400 flex items-center justify-center text-white shadow-2xl">
-//               <User size={80} />
-//             </div>
-
-//             <div className="text-center md:text-left">
-//               <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter mb-6">{displayUser?.fullName}</h2>
-//               <div className="flex flex-wrap justify-center md:justify-start gap-4">
-//                 <span className="flex items-center gap-2 px-6 py-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl text-xs font-black uppercase tracking-widest">
-//                   <ShieldCheck size={16} /> Verified Account
-//                 </span>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* Details Grid */}
-//           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-//             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//               <DetailBox icon={<Mail />} label="Email Address" value={displayUser?.email} />
-//               <DetailBox icon={<Phone />} label="Contact" value={details?.contactNumber || "Not Provided"} />
-//               <DetailBox icon={<MapPin />} label="Gender" value={details?.gender || "Not Provided"} />
-//               <DetailBox icon={<Calendar />} label="Age" value={details?.age ? `${details.age} Years` : "Not Provided"} />
-//             </div>
-
-//             <div className="bg-white/5 border border-white/10 rounded-[3rem] p-12 shadow-xl">
-//               <h3 className="text-2xl font-bold text-white mb-8">About Me</h3>
-//               <p className="text-gray-400 leading-relaxed italic">
-//                 {details?.about || "No description added yet. Click edit to tell people about yourself!"}
-//               </p>
-//               <button className="mt-10 w-full flex items-center justify-between p-6 bg-white/5 border border-white/5 rounded-3xl hover:border-blue-500/50 transition-all group">
-//                 <span className="text-gray-200 font-bold text-lg">Edit Profile Details</span>
-//                 <ChevronRight className="group-hover:translate-x-2 transition-transform text-blue-400" size={24} />
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </motion.div>
-//   );
-// };
-
-// const DetailBox = ({ icon, label, value }) => (
-//   <div className="p-10 rounded-[3rem] bg-white/5 border border-white/5 hover:bg-white/[0.08] transition-all group">
-//     <div className="w-14 h-14 bg-blue-600/10 rounded-[1.5rem] flex items-center justify-center text-blue-400 mb-8 group-hover:scale-110 transition-transform">
-//       {React.cloneElement(icon, { size: 28 })}
-//     </div>
-//     <p className="text-[11px] text-gray-500 font-black uppercase tracking-widest mb-2">{label}</p>
-//     <p className="text-xl text-gray-100 font-bold tracking-tight">{value}</p>
-//   </div>
-// );
-
-// export default UserProfile;
 
 
 import React, { useState, useEffect } from 'react';
@@ -130,7 +5,7 @@ import { motion } from 'framer-motion';
 import { 
   User, Mail, Phone, Calendar, 
   ArrowLeft, ShieldCheck, MapPin, 
-  ChevronRight, Edit3, Save, X 
+  ChevronRight, Edit3, Save, X, Briefcase, ExternalLink
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -140,6 +15,7 @@ const UserProfile = () => {
   const navigate = useNavigate();
   const { user: authUser } = useAuth();
   const [profileData, setProfileData] = useState(null);
+  const [appliedJobs, setAppliedJobs] = useState([]); // 🔥 Applied jobs arrays handle
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
@@ -156,6 +32,8 @@ const UserProfile = () => {
   const fetchUserData = async () => {
     try {
       const token = localStorage.getItem("token");
+      
+      // 1. User details fetch request
       const response = await fetch('http://localhost:5000/api/v1/auth/getUserDetails', {
         method: 'GET',
         headers: {
@@ -163,9 +41,11 @@ const UserProfile = () => {
         }
       });
       const data = await response.json();
+      
       if (data.success) {
         setProfileData(data.userDetails);
-        // Initialize form fields with incoming backend data sync
+        const currentUserId = data.userDetails?._id;
+
         setEditForm({
           fullName: data.userDetails?.fullName || "",
           contactNumber: data.userDetails?.additionalDetails?.contactNumber || "",
@@ -173,9 +53,25 @@ const UserProfile = () => {
           age: data.userDetails?.additionalDetails?.age || "",
           about: data.userDetails?.additionalDetails?.about || ""
         });
+
+        // 2. 🔥 UPDATED LINK: Postman se verified URL path match kiya
+        if (currentUserId) {
+          const jobsResponse = await fetch('http://localhost:5000/api/v1/jobs/alljobs', {
+            method: 'GET'
+          });
+          const jobsData = await jobsResponse.json();
+          
+          if (jobsData.success && jobsData.jobs) {
+            // Filter: Job.applications array tracking pipeline filter match user ID
+            const filteredJobs = jobsData.jobs.filter(job => 
+              job.applications && job.applications.includes(currentUserId)
+            );
+            setAppliedJobs(filteredJobs);
+          }
+        }
       }
     } catch (error) {
-      console.error("Error fetching profile:", error);
+      console.error("Error fetching profile & jobs data pipeline:", error);
     } finally {
       setLoading(false);
     }
@@ -186,35 +82,34 @@ const UserProfile = () => {
   }, []);
 
   const handleSaveProfile = async () => {
-  setSaveLoading(true);
-  try {
-    const token = localStorage.getItem("token");
-    const response = await fetch('http://localhost:5000/api/v1/auth/updateProfile', {
-      method: 'PUT', // Route schema method
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(editForm)
-    });
+    setSaveLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch('http://localhost:5000/api/v1/auth/updateProfile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(editForm)
+      });
 
-    const data = await response.json();
-    
-    if (response.ok && data.success) {
-      toast.success("Profile records updated dynamically! ✨");
-      setIsEditing(false);
-      fetchUserData(); // Refreshes and repopulates dashboard view
-    } else {
-      // Backend se jo message aayega ab wahi toast par dikhega!
-      toast.error(data.message || "Failed update process loop");
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        toast.success("Profile records updated dynamically! ✨");
+        setIsEditing(false);
+        fetchUserData(); 
+      } else {
+        toast.error(data.message || "Failed update process loop");
+      }
+    } catch (error) {
+      console.error("Update operational crash details:", error);
+      toast.error("Network error with server!");
+    } finally {
+      setSaveLoading(false);
     }
-  } catch (error) {
-    console.error("Update operational crash details:", error);
-    toast.error("Network or connection error with server!");
-  } finally {
-    setSaveLoading(false);
-  }
-};
+  };
 
   if (loading) return <div className="min-h-screen bg-[#0f172a] text-cyan-400 flex items-center justify-center font-bold animate-pulse">Loading Profile...</div>;
 
@@ -229,7 +124,7 @@ const UserProfile = () => {
     >
       <Toaster />
       
-      {/* Top Standard Nav Bar - Optimized to Max 4W size scale */}
+      {/* Top Standard Nav Bar */}
       <div className="w-full max-w-4xl mx-auto py-6 flex justify-between items-center">
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:text-white transition-all text-sm font-medium">
           <ArrowLeft size={16} /> Back
@@ -249,7 +144,7 @@ const UserProfile = () => {
       {/* Main Profile Core Wrapper Box */}
       <div className="w-full max-w-4xl mx-auto pb-16 space-y-6">
         
-        {/* Profile Hero Header Element - Resized perfectly from p-20 down to p-8 */}
+        {/* Profile Hero Header Element */}
         <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8 relative overflow-hidden flex flex-col md:flex-row items-center gap-6 shadow-xl">
           <div className="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-gradient-to-tr from-blue-600 to-blue-400 flex items-center justify-center text-white shadow-md">
             <User size={48} />
@@ -271,7 +166,6 @@ const UserProfile = () => {
             </div>
           </div>
           
-          {/* Action Trigger Node Toggle controls */}
           <div className="flex gap-2">
             {isEditing ? (
               <>
@@ -290,7 +184,7 @@ const UserProfile = () => {
           </div>
         </div>
 
-        {/* Details Informational Grid - Resized from p-10 grids down to standardized clean compact blocks */}
+        {/* Details Informational Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <DetailBox isEditing={false} icon={<Mail />} label="Email Address" value={displayUser?.email} />
@@ -313,7 +207,7 @@ const UserProfile = () => {
             </DetailBox>
           </div>
 
-          {/* About Bio Section - Re-structured bounding block size */}
+          {/* About Bio Section */}
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6 shadow-md flex flex-col justify-between">
             <div>
               <h3 className="text-lg font-bold text-white mb-3">About Me</h3>
@@ -335,12 +229,67 @@ const UserProfile = () => {
           </div>
         </div>
 
+        {/* 📋 APPLIED JOBS SECTION */}
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8 backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
+            <h3 className="text-xl font-bold flex items-center gap-2 text-white">
+              <Briefcase className="text-blue-400" size={20} /> Applied Jobs History
+            </h3>
+            <span className="bg-blue-600/20 text-blue-400 text-xs px-3 py-1 rounded-full font-bold">
+              {appliedJobs.length} Applications
+            </span>
+          </div>
+
+          {appliedJobs.length === 0 ? (
+            <div className="text-center py-10 border-2 border-dashed border-white/5 rounded-2xl">
+              <p className="text-gray-500 text-sm">Aapne abhi tak kisi job ke liye apply nahi kiya hai.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+              {appliedJobs.map((job, index) => (
+                <div 
+                  key={index}
+                  className="bg-slate-900/50 border border-white/5 p-4 rounded-2xl hover:border-blue-500/30 transition-all flex flex-col justify-between group"
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="text-white font-bold text-sm truncate mb-1 group-hover:text-blue-400 transition-colors">
+                        {job.title}
+                      </h4>
+                      <p className="text-gray-400 text-[10px] flex items-center gap-1 mb-3 uppercase tracking-wider">
+                        <MapPin size={10} /> {job.location || "Remote"}
+                      </p>
+                    </div>
+                    {/* 🔥 Click to redirect on dynamic path: http://localhost:3000/jobfind/[jobId] */}
+                    <button 
+                      onClick={() => navigate(`/jobfind/${job._id}`)}
+                      className="p-2 bg-blue-600/10 text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                      title="View Details"
+                    >
+                      <ExternalLink size={14} />
+                    </button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between mt-2 pt-3 border-t border-white/5">
+                    <span className="flex items-center gap-1 text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
+                       <ShieldCheck size={12} /> Status: Applied
+                    </span>
+                    <span className="text-[10px] text-gray-500 font-semibold">
+                      Type: {job.jobType || "Full-Time"}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
       </div>
     </motion.div>
   );
 };
 
-// Sub-Component Block optimized to encapsulate inline reactive form fields rendering logic
+// Sub-Component Block
 const DetailBox = ({ icon, label, value, isEditing, children }) => (
   <div className="p-5 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/[0.07] transition-all group flex flex-col justify-between">
     <div>

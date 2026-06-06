@@ -206,3 +206,44 @@ exports.applyToJob = async (req, res) => {
         });
     }
 };
+
+
+// 🔥 Job Delete Controller
+exports.deleteJob = async (req, res) => {
+    try {
+        const jobId = req.params.id;
+
+        // 1. Check karo ki job database me exist karti hai ya nahi
+        const job = await Job.findById(jobId);
+        if (!job) {
+            return res.status(404).json({
+                success: false,
+                message: "Job entry missing!"
+            });
+        }
+
+        // 2. ✨ Category document me se bhi is Job key tracking ko pull/remove karo aur vacancies kam karo
+        if (job.category) {
+            await Category.findByIdAndUpdate(job.category, {
+                $pull: { jobs: jobId },
+                $inc: { vacancies: -1 } // Vacancy pipeline trace ko update kiya
+            });
+        }
+
+        // 3. Job ko permanently remove karo database se
+        await Job.findByIdAndDelete(jobId);
+
+        // 4. Success response
+        return res.status(200).json({
+            success: true,
+            message: "Job successfully delete ho gayi!"
+        });
+
+    } catch (error) {
+        console.error("Backend Delete Error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Server internal error! Job delete nahi ho payi."
+        });
+    }
+};

@@ -8,7 +8,7 @@ import { Toaster } from 'react-hot-toast'; // 1. Toaster import kiya
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import Jobs from './pages/Jobs';
+// import Jobs from './pages/Jobs';
 import UserProfile from './pages/UserProfile';
 import UserDashboard from './pages/UserDashboard';
 import AdminPanel from './pages/AdminPanel';
@@ -36,7 +36,7 @@ function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/UserProfile" element={<UserProfile />} />
               <Route path="/job/:id" element={<JobDetails />} />
-              <Route path="/jobs" element={<Jobs />} />
+              {/* <Route path="/jobs" element={<Jobs />} /> */}
               <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/dashboard" element={<UserDashboard />} />
               <Route path="/admin" element={<AdminPanel />} />
