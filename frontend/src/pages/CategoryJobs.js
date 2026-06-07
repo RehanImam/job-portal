@@ -15,7 +15,7 @@ const CategoryJobs = () => {
     const fetchCategoryJobs = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/v1/jobs/alljobs');
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/jobs/alljobs`);
         
         if (response.data.success) {
           console.log("URL Parameter (categoryName):", categoryName);

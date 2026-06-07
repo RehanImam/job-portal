@@ -16,7 +16,7 @@ const Home = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/v1/category/all');
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/category/all`);
         if (response.data.success) {
           setCategories(response.data.categories);
         }

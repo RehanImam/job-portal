@@ -26,7 +26,7 @@ const JobFind = () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:5000/api/v1/jobs/getjob/${id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/jobs/getjob/${id}`, {
           method: "GET",
           headers: { "Authorization": token ? `Bearer ${token}` : "" }
         });
@@ -82,7 +82,7 @@ const JobFind = () => {
     data.append("resume", file);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/v1/jobs/apply/${id}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/jobs/apply/${id}`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}` },
         body: data,

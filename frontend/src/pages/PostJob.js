@@ -18,7 +18,7 @@ const PostJob = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const catRes = await axios.get('http://localhost:5000/api/v1/category/all');
+                const catRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/category/all`);
                 if (catRes.data.success) {
                     setCategoriesList(catRes.data.categories);
                 }
@@ -36,7 +36,7 @@ const PostJob = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.post('http://localhost:5000/api/v1/jobs/createjob', formData, {
+            const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/jobs/createjob`, formData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

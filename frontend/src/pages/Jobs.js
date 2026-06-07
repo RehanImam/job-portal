@@ -13,7 +13,7 @@ const Jobs = () => {
     const fetchJobs = async () => {
       try {
         // Backend URL with correct v1 versioning
-        const response = await fetch("http://localhost:5000/api/v1/jobs/alljobs");;
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/jobs/alljobs`);;
         const data = await response.json();
         
         if (data.success) {

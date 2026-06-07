@@ -26,7 +26,7 @@ const Signup = () => {
     const toastId = toast.loading("Sending OTP... Please wait."); // 🔥 Real-time status update
 
     try {
-      const response = await fetch('http://localhost:5000/api/v1/auth/sendotp', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/auth/sendotp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email })
@@ -63,7 +63,7 @@ const Signup = () => {
           <div className="grid grid-cols-2 gap-4">
             <input type="number" placeholder="Age" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-blue-500"
               value={formData.age} onChange={(e) => setFormData({...formData, age: e.target.value})} />
-            <input type="date" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-blue-500 text-gray-400"
+            <input type="date" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-blue-500 "
               value={formData.dob} onChange={(e) => setFormData({...formData, dob: e.target.value})} />
           </div>
 

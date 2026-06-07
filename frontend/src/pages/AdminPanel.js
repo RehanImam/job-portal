@@ -28,20 +28,21 @@ const AdminPanel = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       
-      const res = await axios.get('http://localhost:5000/api/admin/stats', {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/admin/stats`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
         setStats(res.data.stats);
         setApplications(res.data.applications);
+
       }
 
-      const catRes = await axios.get('http://localhost:5000/api/v1/category/all');
+      const catRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/category/all`);
       if (catRes.data.success) {
         setCategoriesList(catRes.data.categories);
       }
 
-      const jobRes = await axios.get('http://localhost:5000/api/v1/jobs/alljobs');
+      const jobRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/jobs/alljobs`);
       if (jobRes.data.success) {
         setJobsList(jobRes.data.jobs);
       }
@@ -56,7 +57,7 @@ const AdminPanel = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/v1/category/create', categoryData, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/category/create`, categoryData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success("Category created smoothly! ✨");
@@ -71,7 +72,7 @@ const AdminPanel = () => {
     if (!window.confirm(`⚠️ WARNING: Kya aap sach me "${catName.toUpperCase()}" category aur iske andar ke SAARE JOBS aur APPLICATIONS ko permanent delete karna chahte hain?`)) return;
 
     try {
-      const res = await axios.delete(`http://localhost:5000/api/v1/category/delete/${catId}`);
+      const res = await axios.delete(`${process.env.REACT_APP_API_URL}/api/v1/category/delete/${catId}`);
       if (res.data.success) {
         toast.success(`${catName} aur uske saare jobs saaf! 🗑️`);
         fetchDashboardMetrics(); 
@@ -89,7 +90,7 @@ const AdminPanel = () => {
     setJobLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.post('http://localhost:5000/api/v1/jobs/createjob', jobFormData, {
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/jobs/createjob`, jobFormData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
@@ -109,7 +110,7 @@ const AdminPanel = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.delete(`http://localhost:5000/api/v1/jobs/delete/${jobId}`, {
+      const res = await axios.delete(`${process.env.REACT_APP_API_URL}/api/v1/jobs/delete/${jobId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -127,7 +128,7 @@ const AdminPanel = () => {
   const handleDeleteApplication = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.delete(`http://localhost:5000/api/admin/application/${id}`, {
+      const res = await axios.delete(`${process.env.REACT_APP_API_URL}/api/admin/application/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

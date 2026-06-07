@@ -34,7 +34,7 @@ const UserProfile = () => {
       const token = localStorage.getItem("token");
       
       // 1. User details fetch request
-      const response = await fetch('http://localhost:5000/api/v1/auth/getUserDetails', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/auth/getUserDetails`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -56,7 +56,7 @@ const UserProfile = () => {
 
         // 2. 🔥 UPDATED LINK: Postman se verified URL path match kiya
         if (currentUserId) {
-          const jobsResponse = await fetch('http://localhost:5000/api/v1/jobs/alljobs', {
+          const jobsResponse = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/jobs/alljobs`, {
             method: 'GET'
           });
           const jobsData = await jobsResponse.json();
@@ -85,7 +85,7 @@ const UserProfile = () => {
     setSaveLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch('http://localhost:5000/api/v1/auth/updateProfile', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/auth/updateProfile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
