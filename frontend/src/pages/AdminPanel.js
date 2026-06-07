@@ -69,7 +69,7 @@ const AdminPanel = () => {
   };
 
   const handleDeleteCategory = async (catId, catName) => {
-    if (!window.confirm(`⚠️ WARNING: Kya aap sach me "${catName.toUpperCase()}" category aur iske andar ke SAARE JOBS aur APPLICATIONS ko permanent delete karna chahte hain?`)) return;
+    if (!window.confirm(`⚠️ WARNING: Do you want to delete  "${catName.toUpperCase()}" category?`)) return;
 
     try {
       const res = await axios.delete(`${process.env.REACT_APP_API_URL}/api/v1/category/delete/${catId}`);
@@ -106,7 +106,7 @@ const AdminPanel = () => {
   };
 
   const handleDeleteJob = async (jobId, jobTitle) => {
-    if (!window.confirm(`⚠️ ALERT: Kya aap sach me "${jobTitle.toUpperCase()}" job ko system se delete karna chahte hain?`)) return;
+    if (!window.confirm(`⚠️ ALERT: Do you want to this  "${jobTitle.toUpperCase()}" job?`)) return;
 
     try {
       const token = localStorage.getItem('token');
