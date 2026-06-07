@@ -13,7 +13,7 @@ import UserProfile from './pages/UserProfile';
 import UserDashboard from './pages/UserDashboard';
 import AdminPanel from './pages/AdminPanel';
 import Navbar from './components/Navbar';
-import JobDetails from './pages/JobDetails';
+// import JobDetails from './pages/JobDetails';
 import VerifyEmail from './pages/VerifyEmail';
 import PostJob from './pages/PostJob';
 import CategoryJobs from './pages/CategoryJobs';
@@ -35,7 +35,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/UserProfile" element={<UserProfile />} />
-              <Route path="/job/:id" element={<JobDetails />} />
+              {/* <Route path="/job/:id" element={<JobDetails />} /> */}
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/dashboard" element={<UserDashboard />} />
