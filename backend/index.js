@@ -25,9 +25,18 @@ const categoryRoutes = require("./routes/categoryRoutes");
 // 2. Middlewares
 app.use(express.json());
 app.use(cookieParser());
+// app.use(
+//   cors({
+//     origin: ["http://localhost:3000","https://job-portal-foryou-3yzo.onrender.com"],
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     credentials: true,
+//   })
+// );
+
+
 app.use(
   cors({
-    origin: ["http://localhost:3000","https://job-portal-foryou-3yzo.onrender.com"],
+    origin: ["http://localhost:3000","https://job-portal-w1gh.vercel.app/"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
